@@ -1,7 +1,10 @@
+
 require("dotenv").load();
 var fs = require("fs");
-var twitter = require('twitter');
+// var twitter = require('twitter');
 var request=require('request');
+
+var moment = require('moment');
 
 // var spotify = new Spotify(keys.spotify);
 var keys = require('./keys.js');
@@ -28,26 +31,26 @@ switch(action) {
 };
 
 function findConcert() {
-
-var artistLookup = value;
-
-for (i=4;i<process.argv.length;i++) {
-
-                artistLookup += '+' + process.argv[i];
-                                    }
-console.log(artistLookup)
-                            
-//input request to the queryUrl to retrieve data
-var queryUrl = 'https://rest.bandsintown.com/artists/' + artistLookup+ '/events?app_id=codingbootcamp';
-        //send request to omdb
-            request(queryUrl,function(error,response,body) {
-            if( !error && response.statusCode === 200)
-                            {
-        //console log the movie information returned
-        console.log('Name of Venue:' +JSON.parse(body).id);                   
-        console.log('Name of Venue:' +JSON.parse(body).venue.name);
-                            }
-                   })
+    var artistLookup = value;
+    for (i = 4; i < process.argv.length; i++) {
+        artistLookup += '+' + process.argv[i];
+    }
+    console.log(artistLookup)
+        //input request to the queryUrl to retrieve data
+    var queryUrl = 'https://rest.bandsintown.com/artists/' + artistLookup + '/events?app_id=codingbootcamp';
+    //send request to omdb
+    request(queryUrl, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+            //console log the movie information returned
+            var queryResponse = body;
+            for (index = 0; index < queryResponse.length; index++) {
+                console.log('\n------------------------------------------------------------\n\n')
+                console.log('Venue: ' + JSON.parse(queryResponse)[index].venue.name);
+                console.log('Location: ' + JSON.parse(queryResponse)[index].venue.city + ', ' + JSON.parse(queryResponse)[index].venue.country);
+                console.log('Date of Event: ' + moment(JSON.stringify(JSON.parse(queryResponse)[index].datetime), 'YYYY/MM/DD').format('MM/DD/YYYY'));
+            }
+        }
+    });
 };
 
 function searchSong() {
@@ -85,6 +88,7 @@ function grabMovie() {
 //send request to omdb
     request(queryUrl,function(error,response,body) {
     if( !error && response.statusCode === 200)
+    // console.log(body);
                     {
 //console log the movie information returned
                     console.log('Title:' +JSON.parse(body).Title);
