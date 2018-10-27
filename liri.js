@@ -1,20 +1,13 @@
-
 require("dotenv").load();
 var fs = require("fs");
-// var twitter = require('twitter');
 var request=require('request');
-
 var moment = require('moment');
-
-// var spotify = new Spotify(keys.spotify);
 var keys = require('./keys.js');
-
+var Spotify = require('node-spotify-api');
 
 //user input variables
 var action = process.argv[2];
 var value = process.argv[3];
-
-
 
 switch(action) {
    case 'concert-this':
@@ -22,11 +15,15 @@ switch(action) {
     break;
 
     case 'spotify-this-song':
-    searchSong();
+    searchSong(value);
     break;
 
    case 'movie-this': 
     grabMovie();  
+    break;
+
+    case 'do-what-it-says': 
+    grabText();  
     break;
 };
 
@@ -54,16 +51,73 @@ function findConcert() {
 };
 
 function searchSong() {
-    var spotify = require('spotify');
-    spotify.search({type:'track',query: value}, function(err,data) {
+    var spotify = new Spotify({
+        id: keys.spotifyKeys.id,
+        secret: keys.spotifyKeys.secret
+      });
+    
+    var songLookup = value;
+
+    if(songLookup == null) {
+        var songLookup = 'The+Sign'
+    }
+
+    else {
+        for (i = 4; i < process.argv.length; i++) {
+        songLookup += '+' + process.argv[i];
+    }}
+ 
+
+    spotify.search({type:'track',query: songLookup}, function(err,data) {
         if (err) {
             console.log('Error occured: ' +err);
             return;
-        } else if (value == null) {
-            
+        }  
+
+        else  { 
+        
+            console.log('\n------------------------------------------------------------\n');
+            console.log('Artist: '+ data.tracks.items[0].artists[0].name);
+            console.log('Song Name: ' + data.tracks.items[0].name);
+            console.log('Preview Song: ' + data.tracks.items[0].preview_url);
+            console.log('Album: ' + data.tracks.items[0].album.name);
+            console.log(data.tracks);
+            console.log('\n------------------------------------------------------------\n');
         }
-    })
-}
+    });
+    };
+
+function grabText () {
+    
+    fs.readFile('./random.txt', 'utf8', function read(err, data) {
+        if (err) {
+            throw err;
+        }
+        else {
+        var txtString = data.split(',');
+        var action = txtString[0];
+        var value = txtString[1];
+        console.log(txtString);
+        console.log(action);
+        console.log(value);
+
+        switch(action) {
+            case 'concert-this':
+             findConcert();
+             break;
+         
+             case 'spotify-this-song':
+             searchSong(value);
+             break;
+         
+            case 'movie-this': 
+             grabMovie();  
+             break;
+         };
+        }
+    });
+   
+};
 
 
 function grabMovie() {
