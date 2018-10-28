@@ -30,6 +30,7 @@ switch (action) {
 };
 
 function findConcert() {
+	//assign the user request to a variable, handle if the request is more than one word 
 	var artistLookup = value;
 	for (i = 4; i < process.argv.length; i++) {
 		artistLookup += '+' + process.argv[i];
@@ -37,10 +38,10 @@ function findConcert() {
 	
 	//input request to the queryUrl to retrieve data
 	var queryUrl = 'https://rest.bandsintown.com/artists/' + artistLookup + '/events?app_id=codingbootcamp';
-	//send request to omdb
+	
+	//send request to API,console log the response
 	request(queryUrl, function (error, response, body) {
 		if (!error && response.statusCode === 200) {
-			//console log the movie information returned
 			var queryResponse = body;
 			for (index = 0; index < queryResponse.length; index++) {
 				console.log('\n------------------------------------------------------------\n\n')
@@ -53,13 +54,13 @@ function findConcert() {
 };
 
 function searchSong(value) {
+//put hidden keys into a variable
 	var spotify = new Spotify({
 		id: keys.spotifyKeys.id,
 		secret: keys.spotifyKeys.secret
 	});
-
+//assign the user request to a variable, handle a default value to lookup if the user doesnt have a request
 	var songLookup = value;
-
 	if (songLookup == null) {
 		var songLookup = 'The Sign Ace of Base'
 	} else {
@@ -68,7 +69,7 @@ function searchSong(value) {
 		}
 	}
 
-
+//send the request to spotify, console log the results
 	spotify.search({
 		type: 'track',
 		query: songLookup
@@ -77,7 +78,6 @@ function searchSong(value) {
 			console.log('Error occured: ' + err);
 			return;
 		} else {
-
 			console.log('\n------------------------------------------------------------\n');
 			console.log('Artist: ' + data.tracks.items[0].artists[0].name);
 			console.log('Song Name: ' + data.tracks.items[0].name);
@@ -92,27 +92,22 @@ function grabMovie() {
 
 	//handle if the user doesn't have a request or if the request is more than one word
 	if (value == null) {
-
 		var defaultMovie = 'Mr. Nobody';
 		var movieRequest = defaultMovie.split(' ').join('+');
-
 	} else {
 		var movieRequest = value;
 		for (i = 4; i < process.argv.length; i++) {
 			movieRequest += '+' + process.argv[i];
 		}
-
 	}
 
 	//input request to the queryUrl to retrieve data
 	var queryUrl = 'http://www.omdbapi.com/?t=' + movieRequest + '&y=&plot=short&tomatoes=true&r=json&apikey=trilogy';
 
-	//send request to omdb
+	//send request to omdb, console log the response
 	request(queryUrl, function (error, response, body) {
 		if (!error && response.statusCode === 200)
-		
 		{
-            //console log the movie information returned
             console.log('\n------------------------------------------------------------\n');
 			console.log('Title:' + JSON.parse(body).Title);
 			console.log('Year Released:' + JSON.parse(body).Year);
@@ -128,7 +123,7 @@ function grabMovie() {
 };
 
 function grabText() {
-
+//read the contents of the txt file, modify into an array 
 	fs.readFile('./random.txt', 'utf8', function read(err, data) {
 		if (err) {
 			throw err;
@@ -136,10 +131,7 @@ function grabText() {
 			var txtString = data.split(',');
 			var action = txtString[0].trim();
 			var value = txtString[1].trim();
-			console.log(txtString);
-			console.log(action);
-			console.log(value);
-
+//allow user to change the text file and return values for each function
 			switch (action) {
 				case 'concert-this':
 					findConcert(value);
