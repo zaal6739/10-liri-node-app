@@ -29,11 +29,19 @@ The liri node app assignment required the user to be able to input the following
     -Artist
     -Song Name
     -A link to a preview of the song
-    - The album the song is on
+    -The album the song is on
 
 'movie-this'
 
--Input any movie and LIRI will return information on the title, year released, ratings, the country the movie was filmed in, the language the movie is in along with a short description of the plot.
+-Input any movie and LIRI will return information on the folowing for the movie: 
+    -Movie Title
+    -Year Released
+    -IMDB Rating
+    -Rotten Tomatoes Rating
+    -Country
+    -Language
+    -Plot
+    -Actors
 
 'do-what-it-says'
 
