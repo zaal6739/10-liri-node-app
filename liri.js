@@ -13,15 +13,15 @@ var value = process.argv[3];
 //logic to decide which function to run
 switch (action) {
 	case 'concert-this':
-		findConcert();
+		findConcert(value);
 		break;
 
 	case 'spotify-this-song':
-		searchSong();
+		searchSong(value);
 		break;
 
 	case 'movie-this':
-		grabMovie();
+		grabMovie(value);
 		break;
 
 	case 'do-what-it-says':
@@ -29,7 +29,7 @@ switch (action) {
 		break;
 };
 
-function findConcert() {
+function findConcert(value) {
 	//assign the user request to a variable, handle if the request is more than one word 
 	var artistLookup = value;
 	for (i = 4; i < process.argv.length; i++) {
@@ -43,12 +43,16 @@ function findConcert() {
 	request(queryUrl, function (error, response, body) {
 		if (!error && response.statusCode === 200) {
 			var queryResponse = body;
-			for (index = 0; index < queryResponse.length; index++) {
+		
+			try { 
+				for (index = 1; index < queryResponse.length; index++) {
 				console.log('\n------------------------------------------------------------\n\n')
-				console.log('Venue: ' + JSON.parse(queryResponse)[index].venue.name);
+				console.log(JSON.parse(queryResponse)[index].venue.name);
 				console.log('Location: ' + JSON.parse(queryResponse)[index].venue.city + ', ' + JSON.parse(queryResponse)[index].venue.country);
 				console.log('Date of Event: ' + moment(JSON.stringify(JSON.parse(queryResponse)[index].datetime), 'YYYY/MM/DD').format('MM/DD/YYYY'));
-			}
+			}} catch(error){
+				 console.error('')
+				}
 		}
 	});
 };
@@ -88,7 +92,7 @@ function searchSong(value) {
 	});
 };
 
-function grabMovie() {
+function grabMovie(value) {
 
 	//handle if the user doesn't have a request or if the request is more than one word
 	if (value == null) {
@@ -131,6 +135,7 @@ function grabText() {
 			var txtString = data.split(',');
 			var action = txtString[0].trim();
 			var value = txtString[1].trim();
+		
 //allow user to change the text file and return values for each function
 			switch (action) {
 				case 'concert-this':
