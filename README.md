@@ -34,6 +34,7 @@ The liri node app assignment required the user to be able to input the following
 'movie-this'
 
 -Input any movie and LIRI will return information on the folowing for the movie: 
+
     -Movie Title
     -Year Released
     -IMDB Rating
@@ -45,4 +46,4 @@ The liri node app assignment required the user to be able to input the following
 
 'do-what-it-says'
 
--This command will read a text file containing any of the previous command and will return all of the required information to the terminal.
+-This command will read a text file containing any of the previous commands and will return all of the required information to the terminal.
